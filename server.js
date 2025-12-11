@@ -9,16 +9,13 @@ dotenv.config();
 const app = express();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// ⚠️ Importante: NO usar express.json() antes del webhook
 
 app.use(cors());
 
-// ---------------------------------------------------------
-//  WEBHOOK: usa RAW BODY o Stripe no puede verificar la firma
-// ---------------------------------------------------------
+
 app.post(
   "/webhook",
-  bodyParser.raw({ type: "application/json" }), // RAW BODY
+  bodyParser.raw({ type: "application/json" }), 
   (req, res) => {
     const sig = req.headers["stripe-signature"];
 
@@ -50,10 +47,8 @@ app.post(
   }
 );
 
-// ---------------------------------------------------------
-//  Resto de Endpoints (estos YA PUEDEN usar JSON normal)
-// ---------------------------------------------------------
-app.use(express.json()); // JSON normal DESPUÉS del webhook
+
+app.use(express.json()); 
 
 app.post("/create-checkout-session", async (req, res) => {
   try {
@@ -86,7 +81,7 @@ app.post("/create-checkout-session", async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor iniciado en puerto ${PORT}`));
